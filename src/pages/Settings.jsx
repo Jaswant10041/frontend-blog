@@ -18,7 +18,7 @@ const Settings = () => {
     const handleSubmit=async(values,actions)=>{
       console.log(values)
       try{
-        const responce=await axios.put('https://blogging-backend-1-e161.onrender.com/api/users/update',values);
+        const responce=await axios.put('http://localhost:3001/api/users/update',values);
         console.log('settings responce '+responce);
         setErrors('');
         logout();

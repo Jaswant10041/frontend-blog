@@ -3,7 +3,7 @@ import axios from "axios";
 import React from "react";
 const getCurrentUser = async () => {
   try {
-    const response = await axios.get("https://blogging-backend-1-e161.onrender.com/api/users/user");
+    const response = await axios.get("http://localhost:3001/api/users/user");
     const { data } = response;
     // console.log(axios.defaults.headers.common['Authorization']);
     console.log("user Data extracted through tanQuery", data);

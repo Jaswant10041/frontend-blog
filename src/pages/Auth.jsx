@@ -29,7 +29,7 @@ const Auth = () => {
         throw error;
       }
       const response = await axios.post(
-        `https://blogging-backend-1-e161.onrender.com/api/users/${path}`,
+        `http://localhost:3001/api/users/${path}`,
         values
       );
       console.log(response);
