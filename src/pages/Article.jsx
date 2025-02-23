@@ -10,7 +10,9 @@ const Article = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData,setFormData]=useState(null);
   const {articleData}=useArticleQuery(formData);
-  
+  const [bodyValidate,setBodyValidate]=useState('');
+  const [descriptionValidate,setDescriptionValidate]=useState('');
+  const [titleValidate,setTitleValidate]=useState('');
   console.log(articleData);
   const handleEnter = async (e) => {
     if (e.key === "Enter") {
@@ -27,6 +29,22 @@ const Article = () => {
       setIsSubmitting(true);
     }
     values.tags = tagValues;
+    if(values.title===''){
+        setTitleValidate('required');
+        setIsSubmitting(false);
+        return ;
+    }
+    if(values.description===''){
+        setDescriptionValidate('required');
+        setIsSubmitting(false);
+        return ;
+    }
+    if(values.body===''){
+        setBodyValidate('required');
+        setIsSubmitting(false);
+        return ;
+    }
+    
     setFormData(values);
     console.log(articleData);
     setTimeout(() => {
@@ -57,12 +75,18 @@ const Article = () => {
                 placeholder="Article Title"
                 className="border-2 m-2 p-2 w-full"
               />
+              {
+                titleValidate!='' && <h3>{titleValidate}</h3>
+              }
               <Field
                 type="text"
                 name="description"
                 placeholder="What's this article about"
                 className="border-2 m-2 p-2 w-full"
               />
+              {
+                descriptionValidate!='' && <h3>{descriptionValidate}</h3>
+              }
               <Field
                 as="textarea"
                 rows="5"
@@ -71,6 +95,9 @@ const Article = () => {
                 placeholder="Write your article......"
                 className="border-2 m-2 p-2 w-full"
               />
+              {
+                bodyValidate!='' && <h3>{bodyValidate}</h3>
+              }
               <Field
                 type="text"
                 name="tags"
