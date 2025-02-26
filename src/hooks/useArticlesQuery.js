@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react'
 async function getPostsData(){
     try{
-        const response=await axios.get('http://localhost:3001/api/articles/posts');
+        const response=await axios.get('https://blogging-backend-1-e161.onrender.com/api/articles/posts');
         console.log(response);
         return response;
     }

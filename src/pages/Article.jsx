@@ -56,14 +56,16 @@ const Article = () => {
   };
   return (
     <div className="flex justify-center">
+    
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
         enableReinitialize
       >
         {() => (
-          <Form className="w-full md:w-3/5 lg:w-3/5">
+          <Form className="w-full md:w-3/5 lg:w-3/5 mt-8">
             <fieldset className="flex flex-col">
+            <div className="font-medium text-4xl text-center m-5 flex justify-center">Create Article</div>
               <Field
                 type="text"
                 name="title"
@@ -108,8 +110,9 @@ const Article = () => {
               </ul>
               <button
                 type="submit"
+                
                 disabled={isSubmitting}
-                className="border-2 w-20 m-2 p-1"
+                className="border-2 w-20 m-2 p-1 bg-green-500 text-white rounded-full"
               >
                 {isSubmitting === true ? "Publishing" : "Publish Article"}
               </button>
