@@ -1,43 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
-import {useAuth} from './'
+import { useAuth } from ".";
 import { useNavigate } from "react-router-dom";
 const postArticleData = async (values) => {
   try {
     const response = await axios.post(
-      "https://blogging-backend-1-e161.onrender.com/api/articles/add",
+      "http://localhost:3001/api/articles/add",
       { data: values }
     );
     return response;
   } catch (err) {
-    const {logout}=useAuth();
-    const navigate=useNavigate();
-    const {status,data}=err.response;
-    if(status===401){
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+    const { status, data } = err.response;
+    if (status === 401) {
       alert("Session Expired please ReLogin");
       logout();
-      navigate('/')
-    }
-    else{
+      navigate("/");
+    } else {
       console.log(err);
-    };
+    }
   }
 };
 const useArticleQuery = (values) => {
-  const {
-    data: articleData,
-  } = useQuery({
+  const { data: articleData } = useQuery({
     queryKey: ["CreatingArticle"],
-    queryFn: ()=>postArticleData(values),
-    enabled:values!==null,
-    refetchOnWindowFocus: true,
-    staleTime: 0,
-    cacheTime: 0,
+    queryFn: () => postArticleData(values),
+    enabled: values !== null,
   });
-  console.log("article data ",articleData);
+  console.log("article data ", articleData);
   return {
-    articleData
+    articleData,
   };
 };
 

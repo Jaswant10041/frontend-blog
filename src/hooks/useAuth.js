@@ -2,9 +2,8 @@ import React from 'react';
 import { proxy,useSnapshot } from 'valtio';
 
 import axios from 'axios';
-function getAuthUser(){
+async function getAuthUser(){
   const jwt=window.localStorage.getItem('jwt');
-  
   if(!jwt){
     return {};
   }
@@ -12,6 +11,20 @@ function getAuthUser(){
   const parsedData= JSON.parse(decodedJwt);
   console.log('localStorage Data',parsedData);
   axios.defaults.headers.common['Authorization']='Token '+parsedData.accessToken;
+  console.log(parsedData.accessToken)
+  try{
+    const response=await axios.get('http://localhost:3001/api/users/isauthenticated');
+    console.log(response);
+  }
+  catch(err){
+    // console.log("this is in useAuth",err);
+    const {status}=err?.response;
+    // console.log(status);
+    if(status===401){
+      actions.logout();
+      return {};
+    }
+  }
   return parsedData;
 }
 function getisAuth(){
@@ -37,7 +50,7 @@ const actions={
       state.isAuth=false;
       // axios.default.headers.common['Authorization']='';
       delete axios.defaults.headers.common['Authorization'];
-      console.log("Logout");
+      console.log("Logged out");
     }
 }
 const state=proxy({
