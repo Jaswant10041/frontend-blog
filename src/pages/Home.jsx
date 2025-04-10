@@ -24,7 +24,7 @@ const Home = () => {
 
   const handleDelete = async (item) => {
     const response = await axios.post(
-      "http://localhost:3001/api/articles/deletepost",
+      "https://backend-blog-28ea.onrender.comapi/articles/deletepost",
       { data: item }
     );
     console.log(response);

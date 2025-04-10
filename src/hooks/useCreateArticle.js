@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const articleCreate = async (values) => {
   try {
     const response = await axios.post(
-      "http://localhost:3001/api/articles/add",
+      "https://backend-blog-28ea.onrender.comapi/articles/add",
       { data: values }
     );
     return response;

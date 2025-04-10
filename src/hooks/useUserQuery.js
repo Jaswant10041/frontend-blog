@@ -4,7 +4,7 @@ import React from "react";
 import useAuth from './useAuth';
 const getCurrentUser = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/api/users/user");
+    const response = await axios.get("https://backend-blog-28ea.onrender.comapi/users/user");
     const { data } = response;
     console.log("user Data extracted through tanQuery", data);
     return data;

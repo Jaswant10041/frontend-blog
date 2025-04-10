@@ -28,7 +28,7 @@ const Auth = () => {
         throw error;
       }
       const response = await axios.post(
-        `http://localhost:3001/api/users/${path}`,
+        `https://backend-blog-28ea.onrender.comapi/users/${path}`,
         values
       );
       console.log(response);

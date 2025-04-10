@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 async function getPostsData() {
   try {
     const response = await axios.get(
-      "http://localhost:3001/api/articles/posts"
+      "https://backend-blog-28ea.onrender.comapi/articles/posts"
     );
     console.log(response);
     return response;

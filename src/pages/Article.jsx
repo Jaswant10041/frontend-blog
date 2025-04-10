@@ -15,7 +15,7 @@ const Article = () => {
     async function getComments() {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/articles/comments/getcomments/${slug}`
+          `https://backend-blog-28ea.onrender.comapi/articles/comments/getcomments/${slug}`
         );
 
         // Flatten comments to ensure username is on the top level
@@ -44,7 +44,7 @@ const Article = () => {
     setSubmitting(true);
     try {
       const response = await axios.post(
-        `http://localhost:3001/api/articles/comments/addcomment/${slug}`,
+        `https://backend-blog-28ea.onrender.comapi/articles/comments/addcomment/${slug}`,
         { body: comment }
       );
 
