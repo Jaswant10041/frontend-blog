@@ -13,7 +13,7 @@ async function getAuthUser(){
   axios.defaults.headers.common['Authorization']='Token '+parsedData.accessToken;
   console.log(parsedData.accessToken)
   try{
-    const response=await axios.get('https://backend-blog-28ea.onrender.comapi/users/isauthenticated');
+    const response=await axios.get('https://backend-blog-28ea.onrender.com/api/users/isauthenticated');
     console.log(response);
   }
   catch(err){

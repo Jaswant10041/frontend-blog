@@ -24,7 +24,7 @@ const Home = () => {
 
   const handleDelete = async (item) => {
     const response = await axios.post(
-      "https://backend-blog-28ea.onrender.comapi/articles/deletepost",
+      "https://backend-blog-28ea.onrender.com/api/articles/deletepost",
       { data: item }
     );
     console.log(response);
