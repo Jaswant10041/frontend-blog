@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useUserQuery } from "../hooks";
 import axios from "axios";
 import useArticlesQuery from "../hooks/useArticlesQuery";
@@ -8,14 +8,18 @@ const Home = () => {
   const ArticlesData = useArticlesQuery();
   const data = ArticlesData?.data?.data;
   const [expandedArticle, setExpandedArticle] = useState(null);
-
+  useEffect(() => {
+    if (!localStorage.getItem("homeRefreshed")) {
+      localStorage.setItem("homeRefreshed", "true");
+      window.location.reload();
+    }
+  }, []);
   const formatDate = (createdAt) =>
     new Date(createdAt).toLocaleDateString("en-IN", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-
   const formatTime = (createdAt) =>
     new Date(createdAt).toLocaleTimeString("en-IN", {
       hour: "2-digit",
