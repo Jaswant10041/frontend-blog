@@ -83,7 +83,7 @@ const Home = () => {
                 </h3>
               </Link>
 
-              <p className="text-gray-700 text-lg mb-2">{item.description}</p>
+              
 
               {expandedArticle === index && (
                 <p className="text-gray-600 mt-2 leading-relaxed">{item.body}</p>
