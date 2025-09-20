@@ -1,15 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { SlLike } from "react-icons/sl";
 
 const Article = () => {
   const data = useLocation();
-  const article = data?.state?.item;
+  // const article = 
   const [comment, setComment] = useState("");
+  const [article,setArticle]=useState(data?.state?.item);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [updated,setUpdated]=useState(false);
   const { slug } = useParams();
   console.log(article)
   useEffect(() => {
@@ -62,15 +64,29 @@ const Article = () => {
       setSubmitting(false);
     }
   }
+  const navigate=useNavigate();
   const handleLike=async()=>{
       if(!article?._id || !article?.author?._id){
         return ;
       }
-      const response=await axios.post('http://localhost:3000/api/articles/like',{article_id:article._id});
-      console.log(response);
+      try{
+        const response=await axios.post('http://localhost:3000/api/articles/like',{article_id:article._id});
+        console.log(response);
+        setArticle(response?.data)
+        setUpdated(!updated);
+      }
+      catch(err){
+        const {status}=err;
+        if(status===401){
+          navigate('/login');
+          return ;
+        }
+        console.log(err);
+      }
+      
   }
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-3xl mx-auto pt-20 p-6 bg-white rounded-lg shadow-lg">
       {/* Article Header */}
       <div className="mb-10">
         <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
@@ -89,7 +105,7 @@ const Article = () => {
 
         <div className="text-xl font-semibold text-gray-800 mb-8 flex gap-2">
           <div className="flex gap-2">
-            <button onClick={handleLike}><SlLike className="pt-0.5"/></button> 
+            <button onClick={handleLike}><SlLike className="pt-0.5 hover:text-green-500"/></button> 
             <p>{article?.likes?.length} Likes</p>
           </div>
           <div className="">

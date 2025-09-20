@@ -107,9 +107,9 @@ const Home = () => {
     setExpandedArticle(expandedArticle === index ? null : index);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="min-h-screen pt-20">
       <section className="max-w-4xl mx-auto px-6">
-        <h2 className="text-3xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
+        <h2 className="sm:text-xl md:text-2xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
         <div className="space-y-8">
           {filteredPosts?.map((item, index) => (
             <div
@@ -154,19 +154,13 @@ const Home = () => {
                   {item.title}
                 </h3>
               </Link>
-
-              
-
-              {expandedArticle === index && (
-                <p className="text-gray-600 mt-2 leading-relaxed">{item.body}</p>
-              )}
-
-              <button
+              <p className="text-gray-600 mt-2 line-clamp-2">{item.body}</p>
+              {/* <button
                 onClick={() => toggleReadMore(index)}
                 className="mt-4 text-blue-600 hover:text-blue-800 font-semibold transition-all"
               >
                 {expandedArticle === index ? "Show Less ▲" : "Read More ▼"}
-              </button> 
+              </button>  */}
               <div className="flex gap-3 pt-3">
                 <p>{item?.likes?.length} Likes</p>
                 <p>{item?.comments?.length} Comments</p>

@@ -11,7 +11,7 @@ const App = () => {
 
   return (
     <Router>
-      <div className="m-2">
+      <div className="">
         <header><Navbar /></header>
         
           <main>

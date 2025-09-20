@@ -71,9 +71,9 @@ const Navbar = () => {
     getPostsData();
   }, [])
   return (
-    <nav className="">
+    <nav className="pt-2 bg-white shadow-md fixed top-0 w-full z-30">
       <div className=" px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between pb-3 items-center gap-2">
+        <div className="flex justify-between pb-3 items-center">
           {/* Left: Logo */}
           <div className="flex items-center">
             <Link
@@ -128,34 +128,34 @@ const Navbar = () => {
               <>
                 <Link
                   to="/create"
-                  className="bg-green-600 text-white px-4 py-2 rounded-md text-lg font-medium hover:bg-green-700 transition-colors"
+                  className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
                 >
                   Create
                 </Link>
                 <Link
                   to="/settings"
-                  className="bg-green-600 text-white px-4 py-2 rounded-md text-lg font-medium hover:bg-green-700 transition-colors"
+                  className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
                 >
                   Settings
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md text-lg font-medium hover:bg-green-700 transition-colors"
+                  className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
                 >
                   Logout
                 </button>
                 <Link
                   to={`/@${userName}`}
-                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md text-lg font-medium hover:bg-green-700 transition-colors"
+                  className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
                 >
                   <span className="font-medium">{userName}</span>
-                  {authUser?.avatar && (
+                  {/* {authUser?.avatar && (
                     <img
                       src={authUser.avatar}
                       alt={authUser.name}
                       className="h-8 w-8 rounded-full object-cover"
                     />
-                  )}
+                  )} */}
                 </Link>
               </>
             )}

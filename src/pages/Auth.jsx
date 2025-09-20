@@ -99,7 +99,7 @@ const Auth = () => {
                           autoFocus
                           name="name"
                           placeholder="Your name"
-                          className="border border-zinc-700 w-64 md:96 m-2 p-4 rounded-full"
+                          className="border border-zinc-700 w-64 md:80 lg:w-96 m-2 p-4 rounded-full"
                         />
                       )}
 
@@ -108,13 +108,13 @@ const Auth = () => {
                         name="email"
                         autoFocus={isRegistered===null}
                         placeholder="Your email"
-                        className="border border-zinc-700 w-64 md:96 m-3 p-4 rounded-full"
+                        className="border border-zinc-700 w-64 md:w-80 lg:w-96 m-3 p-4 rounded-full"
                       />
                       <Field
                         type="password"
                         name="password"
                         placeholder="Your password"
-                        className="border border-zinc-700 w-64 md:96 m-3 p-4 rounded-full"
+                        className="border border-zinc-700 w-64 md:w-80 lg:w-96 m-3 p-4 rounded-full"
                       />
                       <button
                         type="submit"
