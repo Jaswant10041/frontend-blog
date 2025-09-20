@@ -1,7 +1,7 @@
 import React from 'react';
 import { proxy,useSnapshot } from 'valtio';
-
 import axios from 'axios';
+
 async function getAuthUser(){
   const jwt=window.localStorage.getItem('jwt');
   if(!jwt){
@@ -9,12 +9,12 @@ async function getAuthUser(){
   }
   const decodedJwt=atob(jwt);
   const parsedData= JSON.parse(decodedJwt);
-  console.log('localStorage Data',parsedData);
+  // console.log('localStorage Data',parsedData);
   axios.defaults.headers.common['Authorization']='Token '+parsedData.accessToken;
-  console.log(parsedData.accessToken)
+  // console.log(parsedData.accessToken)
   try{
-    const response=await axios.get('https://backend-blog-28ea.onrender.com/api/users/isauthenticated');
-    console.log(response);
+    const response=await axios.get('http://localhost:3000/api/users/isauthenticated');
+    // console.log(response);
   }
   catch(err){
     // console.log("this is in useAuth",err);
@@ -35,8 +35,11 @@ function getisAuth(){
   return true;
 }
 
+
+
 const actions={
-    login:({user})=>{
+    login:(user)=>{
+        // console.log(user)
         state.authUser=user;
         state.isAuth=true;
         window.localStorage.setItem('jwt',btoa(JSON.stringify(user)));
@@ -51,7 +54,7 @@ const actions={
       // axios.default.headers.common['Authorization']='';
       delete axios.defaults.headers.common['Authorization'];
       console.log("Logged out");
-    }
+    },
 }
 const state=proxy({
   authUser:getAuthUser(),
@@ -60,7 +63,7 @@ const state=proxy({
 
 const useAuth = () => {
   const snap=useSnapshot(state);
-  console.log(snap);
+  // console.log(snap);
   return {
     ...actions,
     ...state

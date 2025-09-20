@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import { SlLike } from "react-icons/sl";
 
 const Article = () => {
   const data = useLocation();
@@ -10,12 +11,12 @@ const Article = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const { slug } = useParams();
-
+  console.log(article)
   useEffect(() => {
     async function getComments() {
       try {
         const response = await axios.get(
-          `https://backend-blog-28ea.onrender.com/api/articles/comments/getcomments/${slug}`
+          `http://localhost:3000/api/articles/comments/getcomments/${slug}`
         );
 
         // Flatten comments to ensure username is on the top level
@@ -44,7 +45,7 @@ const Article = () => {
     setSubmitting(true);
     try {
       const response = await axios.post(
-        `https://backend-blog-28ea.onrender.com/api/articles/comments/addcomment/${slug}`,
+        `http://localhost:3000/api/articles/comments/addcomment/${slug}`,
         { body: comment }
       );
 
@@ -61,7 +62,13 @@ const Article = () => {
       setSubmitting(false);
     }
   }
-
+  const handleLike=async()=>{
+      if(!article?._id || !article?.author?._id){
+        return ;
+      }
+      const response=await axios.post('http://localhost:3000/api/articles/like',{article_id:article._id});
+      console.log(response);
+  }
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       {/* Article Header */}
@@ -79,9 +86,16 @@ const Article = () => {
 
       {/* Comment Section */}
       <div className="border-t pt-8">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-8">
-          Comments ({comments.length})
-        </h2>
+
+        <div className="text-xl font-semibold text-gray-800 mb-8 flex gap-2">
+          <div className="flex gap-2">
+            <button onClick={handleLike}><SlLike className="pt-0.5"/></button> 
+            <p>{article?.likes?.length} Likes</p>
+          </div>
+          <div className="">
+            <p>{comments.length} Comments</p>
+          </div>
+        </div>
 
         {/* Comment Form */}
         <div className="mb-10">
@@ -94,11 +108,10 @@ const Article = () => {
           />
           <div className="flex justify-end mt-4">
             <button
-              className={`px-8 py-3 text-xl rounded-lg transition-all ${
-                submitting
+              className={`px-8 py-3 text-xl rounded-lg transition-all ${submitting
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700 text-white"
-              }`}
+                }`}
               onClick={handleComment}
               disabled={submitting}
             >

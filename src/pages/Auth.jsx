@@ -12,7 +12,7 @@ const Auth = () => {
   const initialLoginDetails = { email: "", password: "" };
 
   async function submit(values, actions) {
-    console.log(values);
+    // console.log(values);
     const { password } = values;
     try {
       const path = isRegistered ? "register" : "login";
@@ -28,11 +28,12 @@ const Auth = () => {
         throw error;
       }
       const response = await axios.post(
-        `https://backend-blog-28ea.onrender.com/api/users/${path}`,
+        `http://localhost:3000/api/users/${path}`,
         values
       );
-      console.log(response);
-      const { data } = response;
+      // console.log("register response ",response);
+      const data = response?.data;
+      // console.log("data",data);
       navigate('/');
       login(data);
       setErrors('');
@@ -46,6 +47,9 @@ const Auth = () => {
       }
       else if(status===401){
         setErrors("Incorrect Password");
+      }
+      else if(status===404){
+        setErrors("Account Not found");
       }
       actions.setErrors(data.msg);
       // console.log(data);
@@ -95,7 +99,7 @@ const Auth = () => {
                           autoFocus
                           name="name"
                           placeholder="Your name"
-                          className="border border-zinc-700 w-96 m-2 p-4 rounded-full"
+                          className="border border-zinc-700 w-64 md:96 m-2 p-4 rounded-full"
                         />
                       )}
 
@@ -104,13 +108,13 @@ const Auth = () => {
                         name="email"
                         autoFocus={isRegistered===null}
                         placeholder="Your email"
-                        className="border border-zinc-700 w-96 m-3 p-4 rounded-full"
+                        className="border border-zinc-700 w-64 md:96 m-3 p-4 rounded-full"
                       />
                       <Field
                         type="password"
                         name="password"
                         placeholder="Your password"
-                        className="border border-zinc-700 w-96 m-3 p-4 rounded-full"
+                        className="border border-zinc-700 w-64 md:96 m-3 p-4 rounded-full"
                       />
                       <button
                         type="submit"
