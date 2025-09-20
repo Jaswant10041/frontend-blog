@@ -166,7 +166,7 @@ const Home = () => {
                 className="mt-4 text-blue-600 hover:text-blue-800 font-semibold transition-all"
               >
                 {expandedArticle === index ? "Show Less ▲" : "Read More ▼"}
-              </button> */}
+              </button> 
               <div className="flex gap-3 pt-3">
                 <p>{item?.likes?.length} Likes</p>
                 <p>{item?.comments?.length} Comments</p>
