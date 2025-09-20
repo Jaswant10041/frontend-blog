@@ -155,14 +155,13 @@ const Home = () => {
                 </h3>
               </Link>
 
-              <p className="text-gray-700 text-lg mb-2">{item.description}</p>
-              {
-                <p className="text-gray-600 mt-2 line-clamp-2">
-                  Databases use B+ trees to store data because they provide efficient operations (insert, update, delete, search) with logarithmic time complexity O(log n), which is superior to the sequential O(n) complexity. In a sequential storage approach, every operation (like search, update, or delete) requires scanning the entire dataset in the worst case, leading to high overhead for large datasets. B+ trees organize rows or documents into nodes (typically sized to match disk blocks, e.g., 4KB), allowing each node to hold multiple entries (e.g., 100 rows per node). This structure minimizes disk I/O: operations require traversing from the root to a leaf node, reading only a few nodes from disk. The tree is always arranged by a primary key, ensuring sorted order and efficient range queries. Key benefits include: efficient search by traversing the tree to the leaf; insert, update, and delete by locating the relevant leaf node and modifying it, with possible node splits or merges to maintain balance; and optimized disk access due to node-based storage matching block sizes.
-                </p>
-              }
+              
 
-              {/* <button
+              {expandedArticle === index && (
+                <p className="text-gray-600 mt-2 leading-relaxed">{item.body}</p>
+              )}
+
+              <button
                 onClick={() => toggleReadMore(index)}
                 className="mt-4 text-blue-600 hover:text-blue-800 font-semibold transition-all"
               >
