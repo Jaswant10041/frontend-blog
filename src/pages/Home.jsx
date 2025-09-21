@@ -26,9 +26,9 @@ const Home = () => {
   const [expandedArticle, setExpandedArticle] = useState(null);
   // console.log(Articles);
   const fetchFollowersAndFollowing = async () => {
-    const followers = await axios.get('http://localhost:3000/api/users/followers');
+    const followers = await axios.get('https://backend-blog-28ea.onrender.com/api/users/followers');
     // console.log(followers);
-    const following = await axios.get('http://localhost:3000/api/users/following');
+    const following = await axios.get('https://backend-blog-28ea.onrender.com/api/users/following');
     // console.log(following);
     setFollowing(following?.data);
   }
@@ -70,7 +70,7 @@ const Home = () => {
   }
   const handleDelete = async (item) => {
     const response = await axios.post(
-      "http://localhost:3000/api/articles/deletepost",
+      "https://backend-blog-28ea.onrender.com/api/articles/deletepost",
       { data: item }
     );
     // console.log(response);
@@ -82,7 +82,7 @@ const Home = () => {
     }
     console.log(item.author._id);
     console.log(following);
-    const response = await axios.post('http://localhost:3000/api/users/follow', { to_follow_id: item?.author?._id });
+    const response = await axios.post('https://backend-blog-28ea.onrender.com/api/users/follow', { to_follow_id: item?.author?._id });
     // console.log(response);
     const updatedFollowing=[...following,{following_id:item.author._id}];
     console.log(updatedFollowing)
@@ -96,7 +96,7 @@ const Home = () => {
     }
     // console.log(item.author._id);
     console.log(following)
-    const response = await axios.post('http://localhost:3000/api/users/unfollow', { following_id: item.author._id });
+    const response = await axios.post('https://backend-blog-28ea.onrender.com/api/users/unfollow', { following_id: item.author._id });
     const updatedFollowing=following?.filter((id)=>id?.following_id!==item?.author?._id);
     console.log(updatedFollowing)
     setFollowing(updatedFollowing);
