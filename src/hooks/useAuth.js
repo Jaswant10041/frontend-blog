@@ -13,7 +13,7 @@ async function getAuthUser(){
   axios.defaults.headers.common['Authorization']='Token '+parsedData.accessToken;
   // console.log(parsedData.accessToken)
   try{
-    const response=await axios.get('https://backend-blog-28ea.onrender.com/api/users/isauthenticated');
+    const response=await axios.get('http://localhost:3000/api/users/isauthenticated');
     // console.log(response);
   }
   catch(err){
@@ -35,11 +35,10 @@ function getisAuth(){
   return true;
 }
 
-
-
 const actions={
     login:(user)=>{
         // console.log(user)
+        axios.defaults.withCredentials=true;
         state.authUser=user;
         state.isAuth=true;
         window.localStorage.setItem('jwt',btoa(JSON.stringify(user)));

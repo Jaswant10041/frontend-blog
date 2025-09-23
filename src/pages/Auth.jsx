@@ -28,7 +28,7 @@ const Auth = () => {
         throw error;
       }
       const response = await axios.post(
-        `https://backend-blog-28ea.onrender.com/api/users/${path}`,
+        `http://localhost:3000/api/users/${path}`,
         values
       );
       // console.log("register response ",response);
@@ -99,7 +99,7 @@ const Auth = () => {
                           autoFocus
                           name="name"
                           placeholder="Your name"
-                          className="border border-zinc-700 w-64 md:80 lg:w-96 m-2 p-4 rounded-full"
+                          className="border border-zinc-700 w-64 md:w-80 lg:w-96 m-3 p-4 rounded-full"
                         />
                       )}
 
