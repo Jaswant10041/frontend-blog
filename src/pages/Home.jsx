@@ -22,6 +22,10 @@ const Home = () => {
   // const Articles = ArticlesData?.data?.data;
   // console.log(Articles);
   const filteredPosts = useStore((state) => state.filteredPosts);
+  const suggestions=useStore((state)=>state.suggestions);
+
+  const setSearchKeyword=useStore((state)=>state.setSearchKeyword);
+
   console.log(filteredPosts)
   const [expandedArticle, setExpandedArticle] = useState(null);
   // console.log(Articles);
@@ -103,12 +107,19 @@ const Home = () => {
     // console.log(response);
     // setUpdated(!updated);
   }
-  const toggleReadMore = (index) =>
-    setExpandedArticle(expandedArticle === index ? null : index);
-
+  const handleSuggestion=(item)=>{
+    setSearchKeyword(item?.title);
+  }
   return (
-    <div className="min-h-screen pt-20">
-      <section className="max-w-4xl mx-auto px-6">
+    <div className="min-h-screen pt-16">
+      <section className="max-w-4xl mx-auto px-6 relative">
+        <ul className="absolute top-0 left-36 border bg-white">
+            {
+              suggestions?.map((item,index)=>(
+                <li className="hover:bg-slate-100 pr-4 pl-4" onClick={()=>handleSuggestion(item)}>{item?.title}</li>
+              ))
+            }
+          </ul>
         <h2 className="sm:text-xl md:text-2xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
         <div className="space-y-8">
           {filteredPosts?.map((item, index) => (

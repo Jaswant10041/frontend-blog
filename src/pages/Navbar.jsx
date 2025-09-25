@@ -6,18 +6,26 @@ import { CiSearch } from "react-icons/ci";
 import useStore from "../hooks/useStore";
 import { IoMenu } from "react-icons/io5";
 import { VscChromeClose } from "react-icons/vsc";
+import { useRef } from "react";
 const Navbar = () => {
+
   const { isAuth, authUser, logout } = useAuth();
-  // console.log(authUser)
-  const [searchKeyword, setSearchKeyword] = useState('');
   const navigate = useNavigate();
+  const timerVarRef=useRef(null);
+  // console.log(authUser)
+
+  const searchKeyword=useStore((state)=>state.searchKeyword);
+  const setSearchKeyword=useStore((state)=>state.setSearchKeyword);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userName, setUserName] = useState('');
 
   const setFilterPosts=useStore((state)=>state.setFilterPosts);
+  const setSuggestions=useStore((state)=>state.setSuggestions);
 
   const posts=useStore((state)=>state.posts);
   const setPosts=useStore((state)=>state.setPosts);
+
   const getPostsData=async()=>{
       try {
         const response = await axios.get(
@@ -32,17 +40,49 @@ const Navbar = () => {
       }
   }
   // console.log(setFilterPosts)
+  const handleSuggestion = async (e) => {
+    setSearchKeyword(e.target.value);
+    console.log(searchKeyword)
+    
+    if (searchKeyword.trim() === "") {
+      setSuggestions([])
+      setFilterPosts(posts); // Reset to original posts if search is empty
+      return;
+    }
+    if(timerVarRef.current){
+      clearTimeout(timerVarRef.current)
+    }
+    try { //debouncing
+      //j
+      //ja
+      timerVarRef.current=setTimeout(async()=>{
+          const response = await axios.get(`http://localhost:3000/api/articles/search/${searchKeyword}`);
+          console.log(response);
+          if (response?.data?.posts) {
+            setSuggestions(response.data.posts);
+          } else {
+            setFilterPosts([]); // Show empty state if no results
+          }
+      },300);
+    } catch (error) {
+      console.error('Search error:', error);
+      setFilterPosts([]); // Show empty state on error
+    }
+  }
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchKeyword.trim() === "") {
+      setSuggestions([])
       setFilterPosts(posts); // Reset to original posts if search is empty
       return;
     }
     
     try {
       const response = await axios.get(`http://localhost:3000/api/articles/search/${searchKeyword}`);
+      console.log(response);
       if (response?.data?.posts) {
         setFilterPosts(response.data.posts);
+        setSuggestions([])
       } else {
         setFilterPosts([]); // Show empty state if no results
       }
@@ -54,6 +94,7 @@ const Navbar = () => {
   const handleHomeClick=()=>{
     setFilterPosts(posts);
     setIsMobileMenuOpen(false);
+    setSuggestions([])
   }
   const handleLogout = () => {
     logout();
@@ -89,7 +130,7 @@ const Navbar = () => {
               type="text" 
               placeholder="Search..." 
               value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
+              onChange={handleSuggestion}
               className="border border-black w-32 sm:w-40 md:w-64 rounded-l-lg px-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" 
             />
             <button 
