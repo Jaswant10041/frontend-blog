@@ -34,8 +34,9 @@ const Auth = () => {
       // console.log("register response ",response);
       const data = response?.data;
       // console.log("data",data);
-      navigate('/');
+      
       login(data);
+      navigate('/');
       setErrors('');
       
     } catch (err) {
