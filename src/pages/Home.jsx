@@ -112,14 +112,7 @@ const Home = () => {
   }
   return (
     <div className="min-h-screen pt-16">
-      <section className="max-w-4xl mx-auto px-6 relative">
-        <ul className="absolute top-0 left-36 border bg-white">
-            {
-              suggestions?.map((item,index)=>(
-                <li className="hover:bg-slate-100 pr-4 pl-4" onClick={()=>handleSuggestion(item)}>{item?.title}</li>
-              ))
-            }
-          </ul>
+      <section className="max-w-4xl mx-auto px-6">
         <h2 className="sm:text-xl md:text-2xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
         <div className="space-y-8">
           {filteredPosts?.map((item, index) => (

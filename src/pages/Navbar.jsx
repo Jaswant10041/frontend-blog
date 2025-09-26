@@ -19,9 +19,34 @@ const Navbar = () => {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userName, setUserName] = useState('');
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
   const setFilterPosts=useStore((state)=>state.setFilterPosts);
   const setSuggestions=useStore((state)=>state.setSuggestions);
+
+  const handleKeyDown = (e) => {
+    const suggestions = useStore.getState().suggestions;
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedSuggestionIndex(prev => 
+        prev < suggestions.length - 1 ? prev + 1 : prev
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedSuggestionIndex(prev => prev > -1 ? prev - 1 : -1);
+    } else if (e.key === 'Enter' && selectedSuggestionIndex > -1) {
+      e.preventDefault();
+      const selectedSuggestion = suggestions[selectedSuggestionIndex];
+      setSearchKeyword(selectedSuggestion.title);
+      setFilterPosts([selectedSuggestion]);
+      setSuggestions([]);
+      setSelectedSuggestionIndex(-1);
+    } else if (e.key === 'Escape') {
+      setSuggestions([]);
+      setSelectedSuggestionIndex(-1);
+    }
+  };
 
   const posts=useStore((state)=>state.posts);
   const setPosts=useStore((state)=>state.setPosts);
@@ -42,7 +67,7 @@ const Navbar = () => {
   // console.log(setFilterPosts)
   const handleSuggestion = async (e) => {
     setSearchKeyword(e.target.value);
-    console.log(searchKeyword)
+    // console.log(searchKeyword)
     
     if (searchKeyword.trim() === "") {
       setSuggestions([])
@@ -125,21 +150,48 @@ const Navbar = () => {
               ConceptHub
             </Link>
           </div>
-          <form onSubmit={handleSearch} className="flex">
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchKeyword}
-              onChange={handleSuggestion}
-              className="border border-black w-32 sm:w-40 md:w-64 rounded-l-lg px-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" 
-            />
-            <button 
-              type="submit"
-              className="text-black border border-black px-2 rounded-r-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <CiSearch size={25} />
-            </button>
-          </form>
+          <div className="relative">
+            <form onSubmit={handleSearch} className="flex">
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                value={searchKeyword}
+                onChange={handleSuggestion}
+                onKeyDown={handleKeyDown}
+                className="border border-black w-32 sm:w-40 md:w-64 rounded-l-lg px-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+              />
+              <button 
+                type="submit"
+                className="text-black border border-black px-2 rounded-r-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              >
+                <CiSearch size={25} />
+              </button>
+            </form>
+
+            {/* Suggestions Dropdown */}
+            {searchKeyword && (
+              <div className="absolute mt-1 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-80 overflow-y-auto z-50">
+                {useStore.getState().suggestions.map((suggestion, index) => (
+                  <div
+                    key={suggestion._id}
+                    className={`px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-col border-b border-gray-100 last:border-b-0 ${
+                      index === selectedSuggestionIndex ? 'bg-gray-100' : ''
+                    }`}
+                    onClick={() => {
+                      setSearchKeyword(suggestion.title);
+                      setFilterPosts([suggestion]);
+                      setSuggestions([]);
+                    }}
+                  >
+                    <span className="font-medium text-gray-900">{suggestion.title}</span>
+                    <span className="text-sm text-gray-500 truncate">
+                      {suggestion.body?.substring(0, 60)}...
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <div className="hidden md:hidden lg:block md:ml-6 md:flex md:items-center md:space-x-6">
             <Link
