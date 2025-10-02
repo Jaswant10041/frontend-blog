@@ -28,7 +28,7 @@ const Auth = () => {
         throw error;
       }
       const response = await axios.post(
-        `https://backend-blog-28ea.onrender.com/api/users/${path}`,
+        `http://localhost:3000/api/users/${path}`,
         values
       );
       // console.log("register response ",response);
@@ -40,8 +40,10 @@ const Auth = () => {
       setErrors('');
       
     } catch (err) {
-      console.log("this is in auth",err);
+      // console.log("this is in auth",err);
       const { status, data } = err?.response;
+      console.log(data)
+
       if(status===409){
         // alert("You are already registered please login");
         setErrors("You are already registered with this email");
@@ -51,6 +53,9 @@ const Auth = () => {
       }
       else if(status===404){
         setErrors("Account Not found");
+      }
+      else if(status===422){
+        setErrors("Password should be atleast 8 characters");
       }
       actions.setErrors(data.msg);
       // console.log(data);
