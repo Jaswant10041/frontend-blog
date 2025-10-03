@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 // import { useUserQuery } from "../hooks";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -12,36 +12,99 @@ const Home = () => {
   const { isAuth, authUser, filteredPostsData } = useAuth();
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
+  const [page,setPage]=useState(1);
   const navigate = useNavigate();
+  const [hasMore,setHasMore]=useState(true);
+  const [loading,setLoading]=useState(false);
+  const observer=useRef();
+  const lastPostRef=useRef();
   // console.log(isAuth);
   // const ArticlesData = useArticlesQuery();
-
   // const obj=snapshot(proxy(filteredPostsData));
   // console.log(obj);
   // console.log([...ArticlesData])
   // const Articles = ArticlesData?.data?.data;
   // console.log(Articles);
-  const filteredPosts = useStore((state) => state.filteredPosts);
-  const suggestions=useStore((state)=>state.suggestions);
 
-  const setSearchKeyword=useStore((state)=>state.setSearchKeyword);
+  const filteredPosts = useStore((state) => state.filteredPosts);
+  const suggestions = useStore((state) => state.suggestions);
+
+  const setSearchKeyword = useStore((state) => state.setSearchKeyword);
 
   console.log(filteredPosts)
   const [expandedArticle, setExpandedArticle] = useState(null);
+
+  const posts=useStore((state)=>state.posts);
+  console.log(posts)
+  const setPosts=useStore((state)=>state.setPosts);
+  const getPostsData=async()=>{
+      if(loading || !hasMore){
+        return ;
+      }
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/articles/posts?page=${page}&limit=10`
+        );
+        const newPosts=response?.data?.posts || [];
+        const fullData=[...posts,...newPosts];
+        // console.log(fullData);
+        setHasMore(response?.data?.hasMore);
+        if(posts.length!==fullData.length){
+          setPosts(fullData);
+        }
+        // console.log(newPosts)
+        // setPosts((prevPosts)=>[...prevPosts,...newPosts]);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+        return err;
+      }
+  }
   // console.log(Articles);
+
   const fetchFollowersAndFollowing = async () => {
-    const followers = await axios.get('https://backend-blog-28ea.onrender.com/api/users/followers');
+    const followers = await axios.get('http://localhost:3000/api/users/followers');
     // console.log(followers);
-    const following = await axios.get('https://backend-blog-28ea.onrender.com/api/users/following');
+    const following = await axios.get('http://localhost:3000/api/users/following');
     // console.log(following);
     setFollowing(following?.data);
   }
+  useEffect(()=>{
+    observer.current=new IntersectionObserver((entries)=>{
+      console.log(entries);
+      if(entries[0]?.isIntersecting){
+        setPage((prev)=>prev+1);
+      }
+    },{threshold:0.1});
+    if(lastPostRef.current){
+      observer.current.observe(lastPostRef.current);
+    }
+    return ()=>{
+      // alert("byee");
+      // console.log("bye")
+      console.log("detached");
+      if(lastPostRef.current){
+        observer.current.unobserve(lastPostRef.current);
+      }
+      observer.current.disconnect();
+
+    }
+  },[filteredPosts])
   useEffect(() => {
     if (isAuth) {
       // console.log(authUser);
       fetchFollowersAndFollowing()
     }
+    else{
+      setFollowing([]);
+    }
   }, [isAuth]);
+  useEffect(()=>{
+    getPostsData();
+  },[page]);
+  
   const formatDate = (createdAt) => {
 
     const created = new Date(createdAt);
@@ -74,7 +137,7 @@ const Home = () => {
   }
   const handleDelete = async (item) => {
     const response = await axios.post(
-      "https://backend-blog-28ea.onrender.com/api/articles/deletepost",
+      "http://localhost:3000/api/articles/deletepost",
       { data: item }
     );
     // console.log(response);
@@ -86,9 +149,9 @@ const Home = () => {
     }
     console.log(item.author._id);
     console.log(following);
-    const response = await axios.post('https://backend-blog-28ea.onrender.com/api/users/follow', { to_follow_id: item?.author?._id });
+    const response = await axios.post('http://localhost:3000/api/users/follow', { to_follow_id: item?.author?._id });
     // console.log(response);
-    const updatedFollowing=[...following,{following_id:item.author._id}];
+    const updatedFollowing = [...following, { following_id: item.author._id }];
     console.log(updatedFollowing)
     setFollowing(updatedFollowing);
     // setUpdated(!updated);
@@ -100,24 +163,29 @@ const Home = () => {
     }
     // console.log(item.author._id);
     console.log(following)
-    const response = await axios.post('https://backend-blog-28ea.onrender.com/api/users/unfollow', { following_id: item.author._id });
-    const updatedFollowing=following?.filter((id)=>id?.following_id!==item?.author?._id);
+    const response = await axios.post('http://localhost:3000/api/users/unfollow', { following_id: item.author._id });
+    const updatedFollowing = following?.filter((id) => id?.following_id !== item?.author?._id);
     console.log(updatedFollowing)
     setFollowing(updatedFollowing);
     // console.log(response);
     // setUpdated(!updated);
   }
-  const handleSuggestion=(item)=>{
+  const handleSuggestion = (item) => {
     setSearchKeyword(item?.title);
   }
+  
+  // useEffect(()=>{
+  // })NewPostsDataIncluded
   return (
     <div className="min-h-screen pt-16">
       <section className="max-w-4xl mx-auto px-6">
         <h2 className="sm:text-xl md:text-2xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
         <div className="space-y-8">
-          {filteredPosts?.map((item, index) => (
+          
+          {Array.isArray(filteredPosts) && filteredPosts?.map((item, index) => (
             <div
-              key={index}
+              key={item._id}
+              ref={index===filteredPosts?.length-1 ? lastPostRef : null}
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg"
             >
               <div className="flex items-center justify-between text-gray-500 text-sm mb-4">
@@ -129,13 +197,9 @@ const Home = () => {
                   />
                   <div>
                     <p className="font-bold text-2xl">{item?.author?.name}</p>
-
                     <p>Ex Software Developer @Auro.Edu</p>
                     <p>{formatDate(item.createdAt)}</p>
-
                   </div>
-
-
                 </div>
                 {
                   following?.some((cur) => cur?.following_id === item?.author?._id) ? (<p><button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={() => handleUnFollow(item)}>Following</button></p>) : (<p><button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={() => handleFollow(item)}>Follow</button></p>)
@@ -172,7 +236,6 @@ const Home = () => {
             </div>
           ))}
         </div>
-
       </section>
     </div>
   );

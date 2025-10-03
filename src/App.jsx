@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './index.css'
 import { Auth, Home, Navbar, Logout, Settings, CreateArticle, Article, } from "./pages";
 import Profile from "./pages/Profile";
+import Test from "./pages/Test";
 
 
 const App = () => {
@@ -25,6 +26,8 @@ const App = () => {
               <Route path="/article/:slug" element={<Article />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/@:username" element={<Profile />} />
+              <Route path="/test" element={<Test />} />
+
               <Route path="*" element={<h1>404 not found</h1>} />
             </Routes>
           </main>

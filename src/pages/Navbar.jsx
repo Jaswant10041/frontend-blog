@@ -49,21 +49,19 @@ const Navbar = () => {
   };
 
   const posts=useStore((state)=>state.posts);
-  const setPosts=useStore((state)=>state.setPosts);
-
-  const getPostsData=async()=>{
-      try {
-        const response = await axios.get(
-          "https://backend-blog-28ea.onrender.com/api/articles/posts"
-        );
-
-        console.log(response?.data);
-        setPosts(response?.data);
-      } catch (err) {
-        console.log(err);
-        return err;
-      }
-  }
+  // const setPosts=useStore((state)=>state.setPosts);
+  // const getPostsData=async()=>{
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:3000/api/articles/posts?page=1&limit=10"
+  //       );
+  //       console.log(response?.data);
+  //       setPosts(response?.data);
+  //     } catch (err) {
+  //       console.log(err);
+  //       return err;
+  //     }
+  // }
   // console.log(setFilterPosts)
   const handleSuggestion = async (e) => {
     setSearchKeyword(e.target.value);
@@ -81,7 +79,7 @@ const Navbar = () => {
       //j
       //ja
       timerVarRef.current=setTimeout(async()=>{
-          const response = await axios.get(`https://backend-blog-28ea.onrender.com/api/articles/search/${searchKeyword}`);
+          const response = await axios.get(`http://localhost:3000/api/articles/search/${searchKeyword}`);
           console.log(response);
           if (response?.data?.posts) {
             setSuggestions(response.data.posts);
@@ -103,7 +101,7 @@ const Navbar = () => {
     }
     
     try {
-      const response = await axios.get(`https://backend-blog-28ea.onrender.com/api/articles/search/${searchKeyword}`);
+      const response = await axios.get(`http://localhost:3000/api/articles/search/${searchKeyword}`);
       console.log(response);
       if (response?.data?.posts) {
         setFilterPosts(response.data.posts);
@@ -134,7 +132,7 @@ const Navbar = () => {
       .catch((err) => {
         console.log(err);
       })
-    getPostsData();
+    // getPostsData();
   }, [])
   return (
     <nav className="pt-2 bg-white shadow-md fixed top-0 w-full z-30">
