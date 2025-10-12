@@ -28,7 +28,7 @@ const Auth = () => {
         throw error;
       }
       const response = await axios.post(
-        `https://backend-blog-28ea.onrender.com/api/users/${path}`,
+        `http://localhost:3000/api/users/${path}`,
         values
       );
       // console.log("register response ",response);

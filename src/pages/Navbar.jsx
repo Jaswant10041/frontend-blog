@@ -53,7 +53,7 @@ const Navbar = () => {
   // const getPostsData=async()=>{
   //     try {
   //       const response = await axios.get(
-  //         "https://backend-blog-28ea.onrender.com/api/articles/posts?page=1&limit=10"
+  //         "http://localhost:3000/api/articles/posts?page=1&limit=10"
   //       );
   //       console.log(response?.data);
   //       setPosts(response?.data);
@@ -79,7 +79,7 @@ const Navbar = () => {
       //j
       //ja
       timerVarRef.current=setTimeout(async()=>{
-          const response = await axios.get(`https://backend-blog-28ea.onrender.com/api/articles/search/${searchKeyword}`);
+          const response = await axios.get(`http://localhost:3000/api/articles/search/${searchKeyword}`);
           console.log(response);
           if (response?.data?.posts) {
             setSuggestions(response.data.posts);
@@ -101,7 +101,7 @@ const Navbar = () => {
     }
     
     try {
-      const response = await axios.get(`https://backend-blog-28ea.onrender.com/api/articles/search/${searchKeyword}`);
+      const response = await axios.get(`http://localhost:3000/api/articles/search/${searchKeyword}`);
       console.log(response);
       if (response?.data?.posts) {
         setFilterPosts(response.data.posts);

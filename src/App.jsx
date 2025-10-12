@@ -6,6 +6,7 @@ import './index.css'
 import { Auth, Home, Navbar, Logout, Settings, CreateArticle, Article, } from "./pages";
 import Profile from "./pages/Profile";
 import Test from "./pages/Test";
+import Chat from "./pages/Chat";
 
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/@:username" element={<Profile />} />
               <Route path="/test" element={<Test />} />
+              <Route path="/chat" element={<Chat />} />
 
               <Route path="*" element={<h1>404 not found</h1>} />
             </Routes>

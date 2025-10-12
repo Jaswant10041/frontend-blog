@@ -11,12 +11,12 @@ const Profile = () => {
   const fetchFollowersAndFollowing = async () => {
     try {
       const followersRes = await axios.get(
-        "https://backend-blog-28ea.onrender.com/api/users/followers"
+        "http://localhost:3000/api/users/followers"
       );
       setFollowers(followersRes?.data);
 
       const followingRes = await axios.get(
-        "https://backend-blog-28ea.onrender.com/api/users/following"
+        "http://localhost:3000/api/users/following"
       );
       setFollowing(followingRes?.data);
     } catch (err) {
