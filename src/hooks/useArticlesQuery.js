@@ -7,7 +7,7 @@ import useStore from "./useStore";
 async function getPostsData() {
   try {
     const response = await axios.get(
-      "http://localhost:3000/api/articles/posts",{
+      "https://backend-blog-28ea.onrender.com/api/articles/posts",{
         params:{
           page:2,
           limit:5,
