@@ -4,6 +4,7 @@ const useStore = create((set) => ({
     filteredPosts: [],
     suggestions: ["first", "second"],
     searchKeyword: "",
+    page:1,
     setSearchKeyword: (str) => set({ searchKeyword: str }),
     setSuggestions: (bufferSuggestions) => set({
         suggestions: bufferSuggestions
@@ -14,7 +15,9 @@ const useStore = create((set) => ({
     }),
     setFilterPosts: (bufferPosts) => set({
         filteredPosts: bufferPosts
-    })
+    }),
+    setPage: (page)=>set({page:page}),
+    resetPosts: () => set({ posts: [] }),
 }));
 
 export default useStore;

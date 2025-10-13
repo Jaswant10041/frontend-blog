@@ -12,12 +12,14 @@ const Home = () => {
   const { isAuth, authUser, filteredPostsData } = useAuth();
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
-  const [page,setPage]=useState(1);
+  const page=useStore((state)=>state.page);
+  const setPage=useStore((state)=>state.setPage);
   const navigate = useNavigate();
   const [hasMore,setHasMore]=useState(true);
   const [loading,setLoading]=useState(false);
   const observer=useRef();
   const lastPostRef=useRef();
+  const resetPosts = useStore((state) => state.resetPosts);
   // console.log(isAuth);
   // const ArticlesData = useArticlesQuery();
   // const obj=snapshot(proxy(filteredPostsData));
@@ -75,7 +77,7 @@ const Home = () => {
     observer.current=new IntersectionObserver((entries)=>{
       console.log(entries);
       if(entries[0]?.isIntersecting){
-        setPage((prev)=>prev+1);
+        setPage(page+1);
       }
     },{threshold:0.1});
     if(lastPostRef.current){
@@ -89,7 +91,7 @@ const Home = () => {
         observer.current.unobserve(lastPostRef.current);
       }
       observer.current.disconnect();
-
+      // resetPosts();
     }
   },[filteredPosts])
   useEffect(() => {
@@ -196,7 +198,7 @@ const Home = () => {
                     className="h-10 w-10 rounded-full mr-3"
                   />
                   <div>
-                    <p className="font-bold text-2xl">{item?.author?.name}</p>
+                    <Link to={`/user/${item?.author?._id}`}><p className="font-bold text-2xl">{item?.author?.name}</p></Link>
                     <p>Ex Software Developer @Auro.Edu</p>
                     <p>{formatDate(item.createdAt)}</p>
                   </div>

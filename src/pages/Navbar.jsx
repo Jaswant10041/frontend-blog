@@ -18,7 +18,7 @@ const Navbar = () => {
   const setSearchKeyword=useStore((state)=>state.setSearchKeyword);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [user, setUser] = useState('');
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
   const setFilterPosts=useStore((state)=>state.setFilterPosts);
@@ -126,8 +126,8 @@ const Navbar = () => {
   };
   useEffect(() => {
     authUser.then((userDetails) => {
-      // console.log(userDetails);
-      setUserName(userDetails.name);
+      console.log(userDetails);
+      setUser(userDetails);
     })
       .catch((err) => {
         console.log(err);
@@ -236,10 +236,10 @@ const Navbar = () => {
                   Logout
                 </button>
                 <Link
-                  to={`/profile/${userName}`}
+                  to={`/user/${user?._id}`}
                   className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
                 >
-                  <span className="font-medium">{userName}</span>
+                  <span className="font-medium">{user?.name}</span>
                   {/* {authUser?.avatar && (
                     <img
                       src={authUser.avatar}
@@ -317,11 +317,11 @@ const Navbar = () => {
                 Logout
               </button>
               <Link
-                to={`/profile/${userName}`}
+                to={`/user/${user?._id}`}
                 className="block px-3 py-2 rounded-md text-base font-medium text-green-800 bg-green-100 hover:bg-green-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {userName}
+                {user?.name}
               </Link>
             </>
           )}
