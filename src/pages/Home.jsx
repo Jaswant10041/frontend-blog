@@ -46,7 +46,7 @@ const Home = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://backend-blog-28ea.onrender.com/api/articles/posts?page=${page}&limit=10`
+          `https://backend-blog-28ea.onrender.com/api/articles/posts?page=${page}&limit=5`
         );
         const newPosts=response?.data?.posts || [];
         const fullData=[...posts,...newPosts];
