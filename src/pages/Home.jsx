@@ -46,7 +46,7 @@ const Home = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://backend-blog-28ea.onrender.com/api/articles/posts?page=${page}&limit=10`
+          `https://backend-blog-28ea.onrender.com/api/articles/posts?page=${page}&limit=5`
         );
         const newPosts=response?.data?.posts || [];
         const fullData=[...posts,...newPosts];
@@ -179,7 +179,7 @@ const Home = () => {
   // useEffect(()=>{
   // })NewPostsDataIncluded
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen">
       <section className="max-w-4xl mx-auto px-6">
         <h2 className="sm:text-xl md:text-2xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
         <div className="space-y-8">

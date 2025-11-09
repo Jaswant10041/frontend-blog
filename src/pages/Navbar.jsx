@@ -6,6 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import useStore from "../hooks/useStore";
 import { IoMenu } from "react-icons/io5";
 import { VscChromeClose } from "react-icons/vsc";
+import { LuMessageSquareMore } from "react-icons/lu";
 import { useRef } from "react";
 const Navbar = () => {
 
@@ -190,7 +191,7 @@ const Navbar = () => {
               </div>
             )}
           </div>
-
+          {/* <Link to={`/chat/${user?._id}`}><LuMessageSquareMore size={25}/></Link>   */}
           <div className="hidden md:hidden lg:block md:ml-6 md:flex md:items-center md:space-x-6">
             <Link
               to="/"

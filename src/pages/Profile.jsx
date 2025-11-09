@@ -37,7 +37,7 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="pt-20 flex justify-center">
+    <div className="flex justify-center">
       <div className="bg-white shadow-md rounded-2xl p-6 w-full max-w-md">
         {/* Profile Header */}
         <div className="flex items-center gap-4">
@@ -57,7 +57,6 @@ const Profile = () => {
             </p>
           </div>
         </div>
-
         {/* Stats */}
         <div className="flex justify-around mt-6 text-center">
           <div>
@@ -73,9 +72,8 @@ const Profile = () => {
             <p className="text-sm text-gray-500">Following</p>
           </div>
         </div>
-
         {/* Divider */}
-        <div className="border-t my-4"></div>
+        <div className="">Follow</div>
 
         {/* Bio */}
         {/* <div className="text-center">

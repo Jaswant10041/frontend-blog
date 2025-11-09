@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const UserProfile = () => {
   const [followers, setFollowers] = useState(0);
@@ -25,7 +25,7 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <div className="pt-20 flex justify-center">
+    <div className="flex justify-center">
       <div className="bg-white shadow-md rounded-2xl p-6 w-full max-w-md">
         {/* Profile Header */}
         <div className="flex items-center gap-4">
@@ -63,7 +63,11 @@ const UserProfile = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t my-4"></div>
+        <div className="flex justify-around mt-6 text-center">
+          <button className="cursor-pointer">Follow</button>
+          <Link to={`/chat/${params?.id}`}><p className="cursor-pointer">Message</p></Link>
+        </div>
+        
 
         {/* Bio */}
         {/* <div className="text-center">
