@@ -6,6 +6,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../hooks/useStore";
+import SkeletonPost from "../components/SkeletonPost";
 
 
 const Home = () => {
@@ -183,60 +184,54 @@ const Home = () => {
       <section className="max-w-4xl mx-auto px-6">
         <h2 className="sm:text-xl md:text-2xl font-semibold text-green-600 mb-6">📚 Your Feed</h2>
         <div className="space-y-8">
-          
-          {Array.isArray(filteredPosts) && filteredPosts?.map((item, index) => (
-            <div
-              key={item._id}
-              ref={index===filteredPosts?.length-1 ? lastPostRef : null}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg"
-            >
-              <div className="flex items-center justify-between text-gray-500 text-sm mb-4">
-                <div className="flex items-center">
-                  <img
-                    src="https://ui-avatars.com/api/?name=Author&background=green&color=fff"
-                    alt="Author"
-                    className="h-10 w-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <Link to={`/user/${item?.author?._id}`}><p className="font-bold text-2xl">{item?.author?.name}</p></Link>
-                    <p>Ex Software Developer @Auro.Edu</p>
-                    <p>{formatDate(item.createdAt)}</p>
-                  </div>
-                </div>
-                {
-                  following?.some((cur) => cur?.following_id === item?.author?._id) ? (<p><button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={() => handleUnFollow(item)}>Following</button></p>) : (<p><button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={() => handleFollow(item)}>Follow</button></p>)
-                }
-                {/* <button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={()=>handleFollow(item)}>Follow</button> */}
-                {/* <button
-                  onClick={() => handleDelete(item)}
-                  className="text-red-500 hover:underline"
-                >
-                  Delete
-                </button> */}
-              </div>
-
-              <Link
-                to={`/article/${item.slug}`}
-                state={{ item }}
-                className="hover:underline"
-              >
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                  {item.title}
-                </h3>
-              </Link>
-              <p className="text-gray-600 mt-2 line-clamp-2">{item.body}</p>
-              {/* <button
-                onClick={() => toggleReadMore(index)}
-                className="mt-4 text-blue-600 hover:text-blue-800 font-semibold transition-all"
-              >
-                {expandedArticle === index ? "Show Less ▲" : "Read More ▼"}
-              </button>  */}
-              <div className="flex gap-3 pt-3">
-                <p>{item?.likes?.length} Likes</p>
-                <p>{item?.comments?.length} Comments</p>
-              </div>
+          {posts.length === 0 && loading ? (
+            <div className="space-y-6">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <SkeletonPost key={i} />
+              ))}
             </div>
-          ))}
+          ) : (
+            Array.isArray(filteredPosts) && filteredPosts?.map((item, index) => (
+              <div
+                key={item._id}
+                ref={index===filteredPosts?.length-1 ? lastPostRef : null}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg"
+              >
+                <div className="flex items-center justify-between text-gray-500 text-sm mb-4">
+                  <div className="flex items-center">
+                    <img
+                      src="https://ui-avatars.com/api/?name=Author&background=green&color=fff"
+                      alt="Author"
+                      className="h-10 w-10 rounded-full mr-3"
+                    />
+                    <div>
+                      <Link to={`/user/${item?.author?._id}`}><p className="font-bold text-2xl">{item?.author?.name}</p></Link>
+                      <p>Ex Software Developer @Auro.Edu</p>
+                      <p>{formatDate(item.createdAt)}</p>
+                    </div>
+                  </div>
+                  {
+                    following?.some((cur) => cur?.following_id === item?.author?._id) ? (<p><button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={() => handleUnFollow(item)}>Following</button></p>) : (<p><button className="hover:bg-green-200 p-1.5 hover:rounded-sm" onClick={() => handleFollow(item)}>Follow</button></p>)
+                  }
+                </div>
+
+                <Link
+                  to={`/article/${item.slug}`}
+                  state={{ item }}
+                  className="hover:underline"
+                >
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                    {item.title}
+                  </h3>
+                </Link>
+                <p className="text-gray-600 mt-2 line-clamp-2">{item.body}</p>
+                <div className="flex gap-3 pt-3">
+                  <p>{item?.likes?.length} Likes</p>
+                  <p>{item?.comments?.length} Comments</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </section>
     </div>
