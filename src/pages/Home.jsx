@@ -19,7 +19,8 @@ const Home = () => {
   const [hasMore,setHasMore]=useState(true);
   const [loading,setLoading]=useState(false);
   const observer=useRef();
-  const lastPostRef=useRef();
+  // use a callback ref for the last post to avoid recreating the IntersectionObserver
+  const lastPostRef = useRef(null);
   const resetPosts = useStore((state) => state.resetPosts);
   // console.log(isAuth);
   // const ArticlesData = useArticlesQuery();
@@ -40,29 +41,31 @@ const Home = () => {
   const posts=useStore((state)=>state.posts);
   console.log(posts)
   const setPosts=useStore((state)=>state.setPosts);
-  const getPostsData=async()=>{
+  const getPostsData=async(controller)=>{
       if(loading || !hasMore){
         return ;
       }
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://backend-blog-28ea.onrender.com/api/articles/posts?page=${page}&limit=5`
+          `https://backend-blog-28ea.onrender.com/api/articles/posts?page=${page}&limit=5`,
+          controller ? { signal: controller.signal } : undefined
         );
         const newPosts=response?.data?.posts || [];
         const fullData=[...posts,...newPosts];
-        // console.log(fullData);
         setHasMore(response?.data?.hasMore);
         if(posts.length!==fullData.length){
           setPosts(fullData);
         }
-        // console.log(newPosts)
-        // setPosts((prevPosts)=>[...prevPosts,...newPosts]);
-        setLoading(false);
       } catch (err) {
-        console.log(err);
-        setLoading(false);
+        if (axios.isCancel && axios.isCancel(err)) {
+          // request was cancelled
+        } else {
+          console.log(err);
+        }
         return err;
+      } finally {
+        setLoading(false);
       }
   }
   // console.log(Articles);
@@ -74,27 +77,33 @@ const Home = () => {
     // console.log(following);
     setFollowing(following?.data);
   }
-  useEffect(()=>{
-    observer.current=new IntersectionObserver((entries)=>{
-      console.log(entries);
-      if(entries[0]?.isIntersecting){
-        setPage(page+1);
+  // Use a stable callback ref to observe the last post element for infinite scroll.
+  useEffect(() => {
+    const options = { threshold: 0.1 };
+    const obsCallback = (entries) => {
+      const entry = entries[0];
+      if (entry && entry.isIntersecting && !loading && hasMore) {
+        // increment page (read current page and add 1)
+        setPage(page + 1);
       }
-    },{threshold:0.1});
-    if(lastPostRef.current){
-      observer.current.observe(lastPostRef.current);
+    };
+
+    observer.current = new IntersectionObserver(obsCallback, options);
+    const currentObserver = observer.current;
+
+    if (lastPostRef.current) {
+      currentObserver.observe(lastPostRef.current);
     }
-    return ()=>{
-      // alert("byee");
-      // console.log("bye")
-      console.log("detached");
-      if(lastPostRef.current){
-        observer.current.unobserve(lastPostRef.current);
+
+    return () => {
+      if (currentObserver && lastPostRef.current) {
+        currentObserver.unobserve(lastPostRef.current);
       }
-      observer.current.disconnect();
-      // resetPosts();
-    }
-  },[filteredPosts])
+      currentObserver && currentObserver.disconnect();
+    };
+    // Intentionally only re-run when `page`, `loading`, or `hasMore` change to avoid
+    // recreating the observer on every posts update which can cause jitter/delays.
+  }, [page, loading, hasMore]);
   useEffect(() => {
     if (isAuth) {
       // console.log(authUser);
@@ -105,7 +114,11 @@ const Home = () => {
     }
   }, [isAuth]);
   useEffect(()=>{
-    getPostsData();
+    const controller = new AbortController();
+    getPostsData(controller);
+    return ()=>{
+      controller.abort();
+    }
   },[page]);
   
   const formatDate = (createdAt) => {
