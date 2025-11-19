@@ -135,21 +135,21 @@ const Home = () => {
     const months = Math.floor(days / 30);
     const years = Math.floor(months / 12);
     if (years >= 1) {
-      return `${years}year`;
+      return `${years} year`;
     }
     if (months >= 1) {
-      return `${months}mon`;
+      return `${months} mon`;
     }
     if (days >= 1) {
-      return `${days}day`;
+      return `${days} day`;
     }
     if (hours >= 1) {
-      return `${hours}hour`;
+      return `${hours} hour`;
     }
     if (mins >= 1) {
-      return `${months}min`;
+      return `${months} min`;
     }
-    return `${secs}sec`;
+    return `${secs} sec`;
   }
   const handleDelete = async (item) => {
     const response = await axios.post(
