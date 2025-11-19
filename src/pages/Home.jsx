@@ -135,16 +135,16 @@ const Home = () => {
     const months = Math.floor(days / 30);
     const years = Math.floor(months / 12);
     if (years >= 1) {
-      return `${years}y`;
+      return `${years}year`;
     }
     if (months >= 1) {
-      return `${months}m`;
+      return `${months}mon`;
     }
     if (days >= 1) {
-      return `${days}d`;
+      return `${days}day`;
     }
     if (hours >= 1) {
-      return `${hours}h`;
+      return `${hours}hour`;
     }
     if (mins >= 1) {
       return `${months}min`;
