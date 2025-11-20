@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
 import axios from "axios";
@@ -6,13 +6,16 @@ import { CiSearch } from "react-icons/ci";
 import useStore from "../hooks/useStore";
 import { IoMenu } from "react-icons/io5";
 import { VscChromeClose } from "react-icons/vsc";
-import { LuMessageSquareMore } from "react-icons/lu";
+// import { LuMessageSquareMore } from "react-icons/lu";
 import { useRef } from "react";
 const Navbar = () => {
 
   const { isAuth, authUser, logout } = useAuth();
   const navigate = useNavigate();
   const timerVarRef=useRef(null);
+  const controllerRef = useRef(null);
+  const cacheRef = useRef(new Map());
+  const MIN_SEARCH_LENGTH = 2;
   // console.log(authUser)
 
   const searchKeyword=useStore((state)=>state.searchKeyword);
@@ -65,54 +68,107 @@ const Navbar = () => {
   // }
   // console.log(setFilterPosts)
   const handleSuggestion = async (e) => {
-    setSearchKeyword(e.target.value);
-    // console.log(searchKeyword)
-    
-    if (searchKeyword.trim() === "") {
-      setSuggestions([])
+    const value = e.target.value;
+    setSearchKeyword(value);
+
+    // Reset when input is empty
+    if (value.trim() === "") {
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+        controllerRef.current = null;
+      }
+      setSuggestions([]);
       setFilterPosts(posts); // Reset to original posts if search is empty
       return;
     }
-    if(timerVarRef.current){
-      clearTimeout(timerVarRef.current)
+
+    // avoid searches for very short queries
+    if (value.trim().length < MIN_SEARCH_LENGTH) {
+      setSuggestions([]);
+      return;
     }
-    try { //debouncing
-      //j
-      //ja
-      timerVarRef.current=setTimeout(async()=>{
-          const response = await axios.get(`https://backend-blog-28ea.onrender.com/api/articles/search/${searchKeyword}`);
-          console.log(response);
-          if (response?.data?.posts) {
-            setSuggestions(response.data.posts);
-          } else {
-            setFilterPosts([]); // Show empty state if no results
-          }
-      },300);
-    } catch (error) {
-      console.error('Search error:', error);
-      setFilterPosts([]); // Show empty state on error
+
+    // clear previous debounce timer
+    if (timerVarRef.current) {
+      clearTimeout(timerVarRef.current);
     }
-  }
+
+    // debounce request
+    timerVarRef.current = setTimeout(async () => {
+      // return cached result if available
+      if (cacheRef.current.has(value)) {
+        setSuggestions(cacheRef.current.get(value));
+        return;
+      }
+
+      // cancel previous in-flight request
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      controllerRef.current = new AbortController();
+
+      try {
+        const response = await axios.get(
+          `https://backend-blog-28ea.onrender.com/api/articles/search/${encodeURIComponent(value)}?limit=20`,
+          { signal: controllerRef.current.signal }
+        );
+        const postsResult = response?.data?.posts || [];
+        // cache small result sets to speed up repetitive typing/backspacing
+        cacheRef.current.set(value, postsResult);
+        setSuggestions(postsResult);
+      } catch (err) {
+        if (err.name === 'CanceledError' || err.name === 'AbortError') {
+          // request was aborted, ignore
+        } else {
+          console.error('Search error:', err);
+          setSuggestions([]);
+          setFilterPosts([]);
+        }
+      } finally {
+        controllerRef.current = null;
+      }
+    }, 300);
+  };
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (searchKeyword.trim() === "") {
-      setSuggestions([])
+    const value = searchKeyword?.trim() || '';
+    if (value === '') {
+      setSuggestions([]);
       setFilterPosts(posts); // Reset to original posts if search is empty
       return;
     }
-    
+
+    // use cache when possible
+    if (cacheRef.current.has(value)) {
+      setFilterPosts(cacheRef.current.get(value));
+      setSuggestions([]);
+      return;
+    }
+
+    // cancel any previous request
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    controllerRef.current = new AbortController();
+
     try {
-      const response = await axios.get(`https://backend-blog-28ea.onrender.com/api/articles/search/${searchKeyword}`);
-      console.log(response);
-      if (response?.data?.posts) {
-        setFilterPosts(response.data.posts);
-        setSuggestions([])
+      const response = await axios.get(
+        `https://backend-blog-28ea.onrender.com/api/articles/search/${encodeURIComponent(value)}?limit=50`,
+        { signal: controllerRef.current.signal }
+      );
+      const postsResult = response?.data?.posts || [];
+      cacheRef.current.set(value, postsResult);
+      setFilterPosts(postsResult);
+      setSuggestions([]);
+    } catch (err) {
+      if (err.name === 'CanceledError' || err.name === 'AbortError') {
+        // ignore aborted requests
       } else {
-        setFilterPosts([]); // Show empty state if no results
+        console.error('Search error:', err);
+        setFilterPosts([]); // Show empty state on error
       }
-    } catch (error) {
-      console.error('Search error:', error);
-      setFilterPosts([]); // Show empty state on error
+    } finally {
+      controllerRef.current = null;
     }
   }
   const handleHomeClick=()=>{
@@ -126,15 +182,24 @@ const Navbar = () => {
     setIsMobileMenuOpen(false); // Close menu after logout
   };
   useEffect(() => {
-    authUser.then((userDetails) => {
-      console.log(userDetails);
-      setUser(userDetails);
-    })
+    let mounted = true;
+    authUser
+      .then((userDetails) => {
+        if (!mounted) return;
+        setUser(userDetails);
+      })
       .catch((err) => {
         console.log(err);
-      })
-    // getPostsData();
-  }, [])
+      });
+
+    return () => {
+      mounted = false;
+      // cleanup debounce timer and abort any in-flight search
+      if (timerVarRef.current) clearTimeout(timerVarRef.current);
+      if (controllerRef.current) controllerRef.current.abort();
+    };
+    // include authUser to avoid stale-closure lint warnings
+  }, [authUser]);
   return (
     <nav className="pt-2 bg-white shadow-md fixed top-0 w-full z-30">
       <div className=" px-4 sm:px-6 lg:px-8">

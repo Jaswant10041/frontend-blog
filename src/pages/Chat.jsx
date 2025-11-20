@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { useAuth } from '../hooks';
@@ -80,8 +80,8 @@ const Chat = () => {
     const formatTime = (iso) => {
         try {
             return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        } catch (e) {
-            return '';
+        } catch (err) {
+            return err;
         }
     };
 

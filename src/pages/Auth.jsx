@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -42,7 +42,7 @@ const Auth = () => {
 
     } catch (err) {
       // console.log("this is in auth",err);
-      const { status, data } = err?.response;
+      const { status, data } = err.response;
       console.log(data)
 
       if (status === 409) {
