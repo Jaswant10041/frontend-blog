@@ -7,7 +7,7 @@ A modern concept sharing platform built with React and Vite.
 ### Step 1: Clone the Repository
 ```bash
 git clone https://github.com/Jaswant10041/frontend-blog.git
-cd frontend-blog
+
 ```
 
 ### Step 2: Install Dependencies
