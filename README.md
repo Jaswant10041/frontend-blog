@@ -1,8 +1,44 @@
-# React + Vite
+# ConceptHub - Concept sharing platform Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern concept sharing platform built with React and Vite.
 
-Currently, two official plugins are available:
+##  How to Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/Jaswant10041/frontend-blog.git
+cd frontend-blog
+```
+
+### Step 2: Install Dependencies
+```bash
+npm install
+```
+
+### Step 3: Create .env File
+Create a `.env` file in the root directory:
+```
+VITE_API_URL=http://localhost:3000
+```
+
+### Step 4: Start Development Server
+```bash
+npm run dev
+```
+
+### Step 5: Open in Browser
+```
+http://localhost:5173/
+```
+
+##  Available Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Check code quality
+```
+
+Done! 
+
