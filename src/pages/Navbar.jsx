@@ -211,7 +211,7 @@ const Navbar = () => {
               className="text-green-500 font-bold text-xl md:text-3xl hover:text-green-400 transition-colors"
               onClick={handleHomeClick}
             >
-              ConceptHub
+              Concept
             </Link>
           </div>
           <div className="relative">
