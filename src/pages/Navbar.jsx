@@ -262,7 +262,7 @@ const Navbar = () => {
               to="/"
               className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
             >
-              Home
+              Homee
             </Link>
 
             {!isAuth ? (
