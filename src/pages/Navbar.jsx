@@ -211,7 +211,7 @@ const Navbar = () => {
               className="text-green-500 font-bold text-xl md:text-3xl hover:text-green-400 transition-colors"
               onClick={handleHomeClick}
             >
-              ConceptHubb
+              ConceptHub
             </Link>
           </div>
           <div className="relative">
@@ -262,7 +262,7 @@ const Navbar = () => {
               to="/"
               className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
             >
-              Homee
+              Home
             </Link>
 
             {!isAuth ? (
