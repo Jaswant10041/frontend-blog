@@ -181,6 +181,7 @@ const Navbar = () => {
     navigate("/login");
     setIsMobileMenuOpen(false); // Close menu after logout
   };
+  
   useEffect(() => {
     let mounted = true;
     authUser
@@ -222,7 +223,7 @@ const Navbar = () => {
                 value={searchKeyword}
                 onChange={handleSuggestion}
                 onKeyDown={handleKeyDown}
-                className="border border-black w-32 sm:w-40 md:w-64 rounded-l-lg px-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                className="border border-black w-32 sm:w-40 md:w-58 rounded-l-lg px-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" 
               />
               <button 
                 type="submit"
@@ -283,6 +284,12 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                <Link
+                  to="/posts"
+                  className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
+                >
+                  My posts
+                </Link>
                 <Link
                   to="/create"
                   className="text-black border border-green-600 px-2 py-0.5 pb-1 rounded-3xl text-md font-medium hover:bg-green-500 hover:text-white  transition-colors"
@@ -363,11 +370,18 @@ const Navbar = () => {
           ) : (
             <>
               <Link
+                to="/posts"
+                className="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-900 hover:bg-green-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                My posts
+              </Link>
+              <Link
                 to="/create"
                 className="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-900 hover:bg-green-50"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Create a Post
+                Create
               </Link>
               <Link
                 to="/settings"

@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { proxy,useSnapshot } from 'valtio';
 import axios from 'axios';
 
@@ -25,6 +25,7 @@ async function getAuthUser(){
       return {};
     }
   }
+  
   return parsedData;
 }
 function getisAuth(){
@@ -61,7 +62,7 @@ const state=proxy({
 })
 
 const useAuth = () => {
-  const snap=useSnapshot(state);
+  // const snap=useSnapshot(state);
   // console.log(snap);
   return {
     ...actions,

@@ -1,13 +1,14 @@
-import React from "react";
+// import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 import './index.css'
 import { Auth, Home, Navbar, Logout, Settings, CreateArticle, Article, } from "./pages";
 import Profile from "./pages/Profile";
-import Test from "./pages/Test";
+// import Test from "./pages/Test";
 import UserProfile from "./pages/UserProfile";
 import Chat from "./pages/Chat";
+import Posts from "./pages/Posts";
 
 
 const App = () => {
@@ -24,6 +25,8 @@ const App = () => {
               <Route path="/logout" element={<Logout />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/create" element={<CreateArticle />} />
+              <Route path="/posts" element={<Posts />} />
+
               <Route path="/article/:slug" element={<Article />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/@:username" element={<Profile />} />
