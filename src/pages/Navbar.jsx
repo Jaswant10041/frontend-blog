@@ -184,14 +184,10 @@ const Navbar = () => {
   
   useEffect(() => {
     let mounted = true;
-    authUser
-      .then((userDetails) => {
-        if (!mounted) return;
-        setUser(userDetails);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if(authUser && Object.keys(authUser).length > 0) {
+      if (!mounted) return;
+      setUser(authUser);
+    }
 
     return () => {
       mounted = false;

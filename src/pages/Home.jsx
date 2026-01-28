@@ -10,7 +10,7 @@ import SkeletonPost from "../components/SkeletonPost";
 
 
 const Home = () => {
-  const { isAuth, authUser, filteredPostsData } = useAuth();
+  const { isAuth, authUser } = useAuth();
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const page=useStore((state)=>state.page);

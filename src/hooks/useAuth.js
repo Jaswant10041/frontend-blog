@@ -2,32 +2,38 @@
 import { proxy,useSnapshot } from 'valtio';
 import axios from 'axios';
 
-async function getAuthUser(){
+function getInitialAuthUser(){
   const jwt=window.localStorage.getItem('jwt');
   if(!jwt){
     return {};
   }
-  const decodedJwt=atob(jwt);
-  const parsedData= JSON.parse(decodedJwt);
-  // console.log('localStorage Data',parsedData);
-  axios.defaults.headers.common['Authorization']='Token '+parsedData.accessToken;
-  // console.log(parsedData.accessToken)
+  try {
+    const decodedJwt=atob(jwt);
+    const parsedData= JSON.parse(decodedJwt);
+    if(parsedData?.accessToken) {
+      axios.defaults.headers.common['Authorization']='Token '+parsedData.accessToken;
+    }
+    return parsedData;
+  } catch(e) {
+    return {};
+  }
+}
+
+async function verifyAuthUser(parsedData){
   try{
     const response=await axios.get('https://backend-blog-28ea.onrender.com/api/users/isauthenticated');
-    // console.log(response);
+    return parsedData;
   }
   catch(err){
-    // console.log("this is in useAuth",err);
     const {status}=err?.response;
-    // console.log(status);
     if(status===401){
       actions.logout();
       return {};
     }
   }
-  
   return parsedData;
 }
+
 function getisAuth(){
   const isAuth=window.localStorage.getItem('jwt');
   if(!isAuth){
@@ -38,7 +44,6 @@ function getisAuth(){
 
 const actions={
     login:(user)=>{
-        // console.log(user)
         axios.defaults.withCredentials=true;
         state.authUser=user;
         state.isAuth=true;
@@ -47,23 +52,35 @@ const actions={
         window.localStorage.setItem('isAuth',true);
     },
     logout:()=>{
-      state.authUser="";
+      state.authUser={};
       window.localStorage.removeItem('jwt');
       window.localStorage.removeItem('isAuth');
       state.isAuth=false;
-      // axios.default.headers.common['Authorization']='';
       delete axios.defaults.headers.common['Authorization'];
       console.log("Logged out");
     },
+    initAuth: async () => {
+      const initialAuthUser = getInitialAuthUser();
+      state.authUser = initialAuthUser;
+      if(Object.keys(initialAuthUser).length > 0) {
+        const verified = await verifyAuthUser(initialAuthUser);
+        state.authUser = verified;
+        state.isAuth = Object.keys(verified).length > 0;
+      }
+    }
 }
+
 const state=proxy({
-  authUser:getAuthUser(),
-  isAuth:getisAuth(),
+  authUser: getInitialAuthUser(),
+  isAuth: getisAuth(),
 })
 
+// Initialize auth on first load
+
+actions.initAuth();
+
+
 const useAuth = () => {
-  // const snap=useSnapshot(state);
-  // console.log(snap);
   return {
     ...actions,
     ...state
