@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
 // console.log(useAuth);
 import useStore from "./useStore";
+import { cacheService } from "./useCacheService";
+import { INITIAL_POSTS } from "../data/initialPosts";
+
 async function getPostsData() {
   try {
     const response = await axios.get(
@@ -15,9 +18,18 @@ async function getPostsData() {
       }
     );
     console.log(response);
+    // Cache the successful response
+    if (response.data && Array.isArray(response.data.posts)) {
+      cacheService.savePosts(response.data.posts);
+    }
     return response;
   } catch (err) {
     console.log(err);
+    // If request fails, try to return cached data
+    const cachedPosts = cacheService.getCachedPosts();
+    if (cachedPosts) {
+      return { data: { posts: cachedPosts }, status: 200 };
+    }
     return err;
   }
 }
@@ -39,8 +51,21 @@ const useArticlesQuery = () => {
       return ;
       // alert("Authenticate to see Posts");
   }
-  console.log(data?.data);
-  setPosts(data?.data);
+  
+  // Set cached posts immediately if available, fallback to initial posts
+  if (!data?.data && cacheService.isCacheValid()) {
+    const cachedPosts = cacheService.getCachedPosts();
+    if (cachedPosts && cachedPosts.length > 0) {
+      setPosts(cachedPosts);
+    }
+  } else if (!data?.data) {
+    // Fallback to initial posts on first visit
+    setPosts(INITIAL_POSTS);
+  } else {
+    console.log(data?.data);
+    setPosts(data?.data);
+  }
+  
   return {
     data,
   };

@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 
 import useStore from "../hooks/useStore";
 import SkeletonPost from "../components/SkeletonPost";
+import { cacheService } from "../hooks/useCacheService";
+import { INITIAL_POSTS } from "../data/initialPosts";
 
 
 const Home = () => {
@@ -41,6 +43,25 @@ const Home = () => {
   const posts=useStore((state)=>state.posts);
   console.log(posts)
   const setPosts=useStore((state)=>state.setPosts);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load cached posts on mount for instant display, fallback to initial posts
+  useEffect(() => {
+    if (!isInitialized && posts.length === 0) {
+      const cachedPosts = cacheService.getCachedPosts();
+      if (cachedPosts && cachedPosts.length > 0) {
+        console.log('Loading posts from cache:', cachedPosts.length);
+        setPosts(cachedPosts);
+      } else {
+        console.log('Loading initial posts for first-time visitors');
+        setPosts(INITIAL_POSTS);
+      }
+      setIsInitialized(true);
+      // Start infinite scroll from page 2 since page 1 is the initial hardcoded posts
+      setPage(2);
+    }
+  }, [isInitialized, posts.length, setPosts, setPage]);
+
   const getPostsData=async(controller)=>{
       if(loading || !hasMore){
         return ;
@@ -52,10 +73,17 @@ const Home = () => {
           controller ? { signal: controller.signal } : undefined
         );
         const newPosts=response?.data?.posts || [];
-        const fullData=[...posts,...newPosts];
+        
+        // Filter out duplicate posts by checking if post ID already exists
+        const postIds = new Set(posts.map(post => post._id));
+        const uniqueNewPosts = newPosts.filter(newPost => !postIds.has(newPost._id));
+        
+        const fullData=[...posts,...uniqueNewPosts];
         setHasMore(response?.data?.hasMore);
         if(posts.length!==fullData.length){
           setPosts(fullData);
+          // Cache the posts when we get fresh data from the server
+          cacheService.savePosts(fullData);
         }
       } catch (err) {
         if (axios.isCancel && axios.isCancel(err)) {
